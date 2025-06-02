@@ -34,56 +34,7 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Belajar HTML</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary me-1" title="Ubah">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger me-1" title="Hapus">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                        <button class="btn btn-sm btn-success" title="Tandai Selesai">
-                            <i class="bi bi-check2-circle"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Kerjakan tugas RPL</td>
-                    <td><span class="badge bg-warning text-dark">Proses</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary me-1" title="Ubah">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger me-1" title="Hapus">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                        <button class="btn btn-sm btn-success" title="Tandai Selesai">
-                            <i class="bi bi-check2-circle"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Baca dokumentasi Bootstrap</td>
-                    <td><span class="badge bg-secondary">Belum</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary me-1" title="Ubah">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger me-1" title="Hapus">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                        <button class="btn btn-sm btn-success" title="Tandai Selesai">
-                            <i class="bi bi-check2-circle"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
+            <tbody id="daftar-todo"></tbody>
         </table>
 
         <form id="todo-form" class="row g-3 mb-4">
@@ -106,9 +57,39 @@
         </form>
 
         <script type="module">
-            import { tambahTodoList } from './main.js'; // pastikan path sesuai file kamu
+            import { tambahTodoList, ambilDaftarTodo } from './main.js'; // pastikan path sesuai file kamu
 
-            $(document).ready(function () {
+            $(document).ready(async function () {
+                const elemenTabel = $('#daftar-todo');
+                const daftar = await ambilDaftarTodo();
+
+                let nomor = 1;
+                daftar.forEach((todo) => {
+                    let warna = 'secondary';
+                    if (todo.status === 'proses') warna = 'warning text-dark';
+                    else if (todo.status === 'selesai') warna = 'success';
+
+                    elemenTabel.append(`
+                <tr>
+                  <td>${nomor}</td>
+                  <td>${todo.teks}</td>
+                  <td><span class="badge bg-${warna} text-capitalize">${todo.status}</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-primary me-1" title="Ubah" data-id="${todo.id}">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger me-1" title="Hapus" data-id="${todo.id}">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                    <button class="btn btn-sm btn-success" title="Tandai Selesai" data-id="${todo.id}">
+                      <i class="bi bi-check2-circle"></i>
+                    </button>
+                  </td>
+                </tr>
+              `);
+                    nomor++;
+                });
+
                 $('#todo-form').submit(async function (event) {
                     event.preventDefault();
 
