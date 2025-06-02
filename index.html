@@ -104,5 +104,43 @@
                 </button>
             </div>
         </form>
+
+        <script type="module">
+            import { tambahTodoList } from './main.js'; // pastikan path sesuai file kamu
+
+            $(document).ready(function () {
+                $('#todo-form').submit(async function (event) {
+                    event.preventDefault();
+
+                    // Ambil data dari input
+                    const teks = $('#task-name').val().trim();
+                    const status = $('#task-status').val().toLowerCase(); // ubah ke huruf kecil: 'belum', 'proses', 'selesai'
+
+                    if (!teks || !status) {
+                        alert('Harap isi nama kegiatan dan pilih status.');
+                        return;
+                    }
+
+                    // Nonaktifkan tombol saat proses berlangsung
+                    $(this).find("button[type='submit']").attr('disabled', 'disabled');
+
+                    try {
+                        await tambahTodoList(teks, status);
+                        alert('Todo berhasil ditambahkan!');
+
+                        // Reset form
+                        this.reset();
+
+                        // Reload halaman (atau panggil ulang fungsi render daftar jika ada)
+                        location.reload();
+                    } catch (err) {
+                        console.error('Gagal menambahkan todo:', err);
+                        alert('Terjadi kesalahan saat menambahkan todo.');
+                    } finally {
+                        $(this).find("button[type='submit']").removeAttr('disabled');
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
