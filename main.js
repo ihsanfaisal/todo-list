@@ -26,7 +26,7 @@ const firebaseConfig = {
 const aplikasi = initializeApp(firebaseConfig);
 const basisdata = getFirestore(aplikasi);
 
-// tambahkan fungsi untuk menampilkan daftar todo list
+// fungsi untuk menampilkan daftar todo list
 export async function ambilDaftarTodo() {
     try {
         const refDokumen = collection(basisdata, "todo");
@@ -47,4 +47,21 @@ export async function ambilDaftarTodo() {
         console.error("Gagal mengambil daftar to-do:", error);
         return [];
     }
+}
+
+// fungsi untuk menambah todo list
+export async function tambahTodoList(teks) {
+  try {
+    // menyimpan data todo ke Firebase
+    const refDokumen = await addDoc(collection(basisdata, "todo"), {
+      teks: teks,
+      status: false // default: belum selesai
+    });
+
+    // menampilkan pesan berhasil
+    console.log("berhasil menyimpan data todo");
+  } catch (error) {
+    // menampilkan pesan gagal
+    console.log("gagal menyimpan data todo");
+  }
 }
